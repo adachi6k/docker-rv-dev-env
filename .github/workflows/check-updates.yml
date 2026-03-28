@@ -78,28 +78,35 @@ jobs:
           spike     = os.environ['SPIKE_LATEST']
           verilator = os.environ['VERILATOR_LATEST']
 
+          import sys
+
           # Update Dockerfile
           with open('Dockerfile') as f:
               c = f.read()
-          c = re.sub(r'ARG RISCV_GNU_TOOLCHAIN_VERSION=\S+', f'ARG RISCV_GNU_TOOLCHAIN_VERSION={toolchain}', c)
-          c = re.sub(r'ARG RISCV_ISA_SIM_VERSION=\S+',       f'ARG RISCV_ISA_SIM_VERSION={spike}', c)
-          c = re.sub(r'ARG VERILATOR_VERSION=\S+',            f'ARG VERILATOR_VERSION={verilator}', c)
+          df_subs = 0
+          c, n = re.subn(r'ARG RISCV_GNU_TOOLCHAIN_VERSION=\S+', f'ARG RISCV_GNU_TOOLCHAIN_VERSION={toolchain}', c); df_subs += n
+          c, n = re.subn(r'ARG RISCV_ISA_SIM_VERSION=\S+',       f'ARG RISCV_ISA_SIM_VERSION={spike}', c); df_subs += n
+          c, n = re.subn(r'ARG VERILATOR_VERSION=\S+',            f'ARG VERILATOR_VERSION={verilator}', c); df_subs += n
+          if df_subs != 3:
+              print(f"ERROR: expected 3 Dockerfile substitutions, got {df_subs}", flush=True)
+              sys.exit(1)
           with open('Dockerfile', 'w') as f:
               f.write(c)
 
           # Update README.md – Included Tools table
           with open('README.md') as f:
               c = f.read()
-          subs = 0
-          c, n = re.subn(r'(\| \[riscv-gnu-toolchain\]\([^)]+\) \| )[^|\n]+(\|)',    rf'\g<1>{toolchain} \2', c); subs += n
-          c, n = re.subn(r'(\| \[riscv-isa-sim \(spike\)\]\([^)]+\) \| )[^|\n]+(\|)', rf'\g<1>{spike} \2', c); subs += n
-          c, n = re.subn(r'(\| \[verilator\]\([^)]+\) \| )[^|\n]+(\|)',               rf'\g<1>{verilator} \2', c); subs += n
+          readme_subs = 0
+          c, n = re.subn(r'(\| \[riscv-gnu-toolchain\]\([^)]+\) \| )[^|\n]+(\|)',    rf'\g<1>{toolchain} \2', c); readme_subs += n
+          c, n = re.subn(r'(\| \[riscv-isa-sim \(spike\)\]\([^)]+\) \| )[^|\n]+(\|)', rf'\g<1>{spike} \2', c); readme_subs += n
+          c, n = re.subn(r'(\| \[verilator\]\([^)]+\) \| )[^|\n]+(\|)',               rf'\g<1>{verilator} \2', c); readme_subs += n
           # Update README.md – Maintenance table
-          c, n = re.subn(r'(\| `RISCV_GNU_TOOLCHAIN_VERSION` \| )`[^`]+`', rf'\g<1>`{toolchain}`', c); subs += n
-          c, n = re.subn(r'(\| `RISCV_ISA_SIM_VERSION` \| )`[^`]+`',       rf'\g<1>`{spike}`', c); subs += n
-          c, n = re.subn(r'(\| `VERILATOR_VERSION` \| )`[^`]+`',            rf'\g<1>`{verilator}`', c); subs += n
-          if subs < 6:
-              print(f"WARNING: expected 6 README substitutions, got {subs}", flush=True)
+          c, n = re.subn(r'(\| `RISCV_GNU_TOOLCHAIN_VERSION` \| )`[^`]+`', rf'\g<1>`{toolchain}`', c); readme_subs += n
+          c, n = re.subn(r'(\| `RISCV_ISA_SIM_VERSION` \| )`[^`]+`',       rf'\g<1>`{spike}`', c); readme_subs += n
+          c, n = re.subn(r'(\| `VERILATOR_VERSION` \| )`[^`]+`',            rf'\g<1>`{verilator}`', c); readme_subs += n
+          if readme_subs != 6:
+              print(f"ERROR: expected 6 README substitutions, got {readme_subs}", flush=True)
+              sys.exit(1)
           with open('README.md', 'w') as f:
               f.write(c)
           EOF
