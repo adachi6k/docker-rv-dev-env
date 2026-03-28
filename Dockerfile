@@ -1,6 +1,6 @@
 ARG UBUNTU_VERSION=24.04
 ARG RISCV_GNU_TOOLCHAIN_VERSION=2026.03.28
-ARG RISCV_ISA_SIM_VERSION=v1.1.0
+ARG RISCV_ISA_SIM_VERSION=20260324-204b88d
 ARG VERILATOR_VERSION=v5.046
 
 # ---- Build Stage ----
@@ -28,9 +28,12 @@ RUN git clone --depth 1 --branch ${RISCV_GNU_TOOLCHAIN_VERSION} \
  && ./configure --prefix=${RISCV} \
  && make -j$(nproc)
 
-RUN git clone --depth 1 --branch ${RISCV_ISA_SIM_VERSION} \
-    https://github.com/riscv/riscv-isa-sim.git \
+RUN COMMIT_SHA=$(echo ${RISCV_ISA_SIM_VERSION} | cut -d- -f2) \
+ && git init riscv-isa-sim \
  && cd riscv-isa-sim \
+ && git remote add origin https://github.com/riscv/riscv-isa-sim.git \
+ && git fetch --depth 1 origin ${COMMIT_SHA} \
+ && git checkout FETCH_HEAD \
  && ./configure --prefix=${RISCV} \
  && make -j$(nproc) \
  && make install

@@ -34,7 +34,8 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TOOLCHAIN=$(gh api repos/riscv/riscv-gnu-toolchain/releases/latest --jq '.tag_name')
-          SPIKE=$(gh api repos/riscv/riscv-isa-sim/releases/latest --jq '.tag_name')
+          # riscv-isa-sim has no releases; track master by date+SHA (YYYYMMDD-sha)
+          SPIKE=$(gh api repos/riscv/riscv-isa-sim/commits/master --jq '(.commit.committer.date[0:10] | gsub("-";"")) + "-" + .sha[0:7]')
           VERILATOR=$(gh api repos/verilator/verilator/tags --jq '.[0].name')
           echo "toolchain=$TOOLCHAIN" >> "$GITHUB_OUTPUT"
           echo "spike=$SPIKE" >> "$GITHUB_OUTPUT"
