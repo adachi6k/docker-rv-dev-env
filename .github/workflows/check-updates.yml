@@ -35,7 +35,7 @@ jobs:
         run: |
           TOOLCHAIN=$(gh api repos/riscv/riscv-gnu-toolchain/releases/latest --jq '.tag_name')
           SPIKE=$(gh api repos/riscv/riscv-isa-sim/releases/latest --jq '.tag_name')
-          VERILATOR=$(gh api repos/verilator/verilator/releases/latest --jq '.tag_name')
+          VERILATOR=$(gh api repos/verilator/verilator/tags --jq '.[0].name')
           echo "toolchain=$TOOLCHAIN" >> "$GITHUB_OUTPUT"
           echo "spike=$SPIKE" >> "$GITHUB_OUTPUT"
           echo "verilator=$VERILATOR" >> "$GITHUB_OUTPUT"
