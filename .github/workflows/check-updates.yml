@@ -1,0 +1,136 @@
+name: Monthly upstream version check
+
+on:
+  schedule:
+    - cron: '0 0 1 * *'   # 1st of every month at 00:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  check-and-update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get current versions from Dockerfile
+        id: current
+        run: |
+          echo "toolchain=$(grep -m1 'ARG RISCV_GNU_TOOLCHAIN_VERSION=' Dockerfile | cut -d= -f2)" >> "$GITHUB_OUTPUT"
+          echo "spike=$(grep -m1 'ARG RISCV_ISA_SIM_VERSION=' Dockerfile | cut -d= -f2)" >> "$GITHUB_OUTPUT"
+          echo "verilator=$(grep -m1 'ARG VERILATOR_VERSION=' Dockerfile | cut -d= -f2)" >> "$GITHUB_OUTPUT"
+
+      - name: Get latest versions from upstream
+        id: latest
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TOOLCHAIN=$(gh api repos/riscv/riscv-gnu-toolchain/releases/latest --jq '.tag_name')
+          SPIKE=$(gh api repos/riscv/riscv-isa-sim/releases/latest --jq '.tag_name')
+          VERILATOR=$(gh api repos/verilator/verilator/releases/latest --jq '.tag_name')
+          echo "toolchain=$TOOLCHAIN" >> "$GITHUB_OUTPUT"
+          echo "spike=$SPIKE" >> "$GITHUB_OUTPUT"
+          echo "verilator=$VERILATOR" >> "$GITHUB_OUTPUT"
+
+      - name: Compare versions
+        id: compare
+        run: |
+          CHANGED=false
+          TOOLCHAIN_CHANGED=false
+          SPIKE_CHANGED=false
+          VERILATOR_CHANGED=false
+
+          if [ "${{ steps.current.outputs.toolchain }}" != "${{ steps.latest.outputs.toolchain }}" ]; then
+            TOOLCHAIN_CHANGED=true
+            CHANGED=true
+          fi
+          if [ "${{ steps.current.outputs.spike }}" != "${{ steps.latest.outputs.spike }}" ]; then
+            SPIKE_CHANGED=true
+            CHANGED=true
+          fi
+          if [ "${{ steps.current.outputs.verilator }}" != "${{ steps.latest.outputs.verilator }}" ]; then
+            VERILATOR_CHANGED=true
+            CHANGED=true
+          fi
+
+          echo "changed=$CHANGED" >> "$GITHUB_OUTPUT"
+          echo "toolchain_changed=$TOOLCHAIN_CHANGED" >> "$GITHUB_OUTPUT"
+          echo "spike_changed=$SPIKE_CHANGED" >> "$GITHUB_OUTPUT"
+          echo "verilator_changed=$VERILATOR_CHANGED" >> "$GITHUB_OUTPUT"
+
+      - name: No updates found
+        if: steps.compare.outputs.changed == 'false'
+        run: echo "All tools are up to date. No changes needed."
+
+      - name: Update Dockerfile and README
+        if: steps.compare.outputs.changed == 'true'
+        env:
+          TOOLCHAIN_LATEST: ${{ steps.latest.outputs.toolchain }}
+          SPIKE_LATEST: ${{ steps.latest.outputs.spike }}
+          VERILATOR_LATEST: ${{ steps.latest.outputs.verilator }}
+        run: |
+          python3 << 'EOF'
+          import re, os
+
+          toolchain = os.environ['TOOLCHAIN_LATEST']
+          spike     = os.environ['SPIKE_LATEST']
+          verilator = os.environ['VERILATOR_LATEST']
+
+          # Update Dockerfile
+          with open('Dockerfile') as f:
+              c = f.read()
+          c = re.sub(r'ARG RISCV_GNU_TOOLCHAIN_VERSION=\S+', f'ARG RISCV_GNU_TOOLCHAIN_VERSION={toolchain}', c)
+          c = re.sub(r'ARG RISCV_ISA_SIM_VERSION=\S+',       f'ARG RISCV_ISA_SIM_VERSION={spike}', c)
+          c = re.sub(r'ARG VERILATOR_VERSION=\S+',            f'ARG VERILATOR_VERSION={verilator}', c)
+          with open('Dockerfile', 'w') as f:
+              f.write(c)
+
+          # Update README.md – Included Tools table
+          with open('README.md') as f:
+              c = f.read()
+          subs = 0
+          c, n = re.subn(r'(\| \[riscv-gnu-toolchain\]\([^)]+\) \| )[^|\n]+(\|)',    rf'\g<1>{toolchain} \2', c); subs += n
+          c, n = re.subn(r'(\| \[riscv-isa-sim \(spike\)\]\([^)]+\) \| )[^|\n]+(\|)', rf'\g<1>{spike} \2', c); subs += n
+          c, n = re.subn(r'(\| \[verilator\]\([^)]+\) \| )[^|\n]+(\|)',               rf'\g<1>{verilator} \2', c); subs += n
+          # Update README.md – Maintenance table
+          c, n = re.subn(r'(\| `RISCV_GNU_TOOLCHAIN_VERSION` \| )`[^`]+`', rf'\g<1>`{toolchain}`', c); subs += n
+          c, n = re.subn(r'(\| `RISCV_ISA_SIM_VERSION` \| )`[^`]+`',       rf'\g<1>`{spike}`', c); subs += n
+          c, n = re.subn(r'(\| `VERILATOR_VERSION` \| )`[^`]+`',            rf'\g<1>`{verilator}`', c); subs += n
+          if subs < 6:
+              print(f"WARNING: expected 6 README substitutions, got {subs}", flush=True)
+          with open('README.md', 'w') as f:
+              f.write(c)
+          EOF
+
+      - name: Prepare PR body
+        if: steps.compare.outputs.changed == 'true'
+        run: |
+          {
+            printf "## Automated version update\n\n"
+            printf "This PR was automatically created by the monthly upstream version check workflow.\n\n"
+            printf "### Changes\n\n"
+            if [ "${{ steps.compare.outputs.toolchain_changed }}" = "true" ]; then
+              printf "- **riscv-gnu-toolchain**: \`${{ steps.current.outputs.toolchain }}\` → \`${{ steps.latest.outputs.toolchain }}\`\n"
+            fi
+            if [ "${{ steps.compare.outputs.spike_changed }}" = "true" ]; then
+              printf "- **riscv-isa-sim (spike)**: \`${{ steps.current.outputs.spike }}\` → \`${{ steps.latest.outputs.spike }}\`\n"
+            fi
+            if [ "${{ steps.compare.outputs.verilator_changed }}" = "true" ]; then
+              printf "- **verilator**: \`${{ steps.current.outputs.verilator }}\` → \`${{ steps.latest.outputs.verilator }}\`\n"
+            fi
+          } > /tmp/pr_body.md
+
+      - name: Create Pull Request
+        if: steps.compare.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: chore/update-tool-versions
+          commit-message: "chore: update tool versions"
+          title: "chore: update tool versions"
+          body-path: /tmp/pr_body.md
+          labels: |
+            dependencies
+            automated

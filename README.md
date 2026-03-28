@@ -10,6 +10,24 @@ Docker image providing a RISC-V hardware development environment.
 | [riscv-isa-sim (spike)](https://github.com/riscv/riscv-isa-sim) | v1.1.0 |
 | [verilator](https://github.com/verilator/verilator) | v5.046 |
 
+## Using the Pre-built Image
+
+Images are published to GitHub Container Registry (GHCR) and updated automatically when tool versions change.
+
+```sh
+docker pull ghcr.io/adachi6k/docker-rv-dev-env:latest
+docker run --rm -it ghcr.io/adachi6k/docker-rv-dev-env:latest bash
+```
+
+## CI Workflows
+
+| Workflow | Trigger | Description |
+|----------|---------|-------------|
+| **Monthly upstream version check** | 1st of each month (UTC) / manual | Fetches the latest upstream releases for all three tools, compares them against the versions in `Dockerfile`, and opens a PR with the diff when a newer version is found. Does nothing if everything is already up to date. |
+| **Build and push Docker image** | Push to `main` that changes `Dockerfile` / manual | Builds the Docker image and pushes it to GHCR with the `latest` tag and a short-SHA tag. |
+
+Both workflows can be triggered manually from the **Actions** tab via `workflow_dispatch`.
+
 ## Maintenance
 
 Tool versions are managed via build arguments (`ARG`) at the top of the `Dockerfile`.
