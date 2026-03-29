@@ -16,6 +16,7 @@ RUN apt-get update && apt-get install -y \
     libtool patchutils bc zlib1g-dev libexpat-dev \
     git \
     device-tree-compiler \
+    perl groff \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
