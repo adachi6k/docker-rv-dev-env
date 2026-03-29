@@ -9,6 +9,8 @@ Docker image providing a RISC-V hardware development environment.
 | [riscv-gnu-toolchain](https://github.com/riscv/riscv-gnu-toolchain) | 2026.03.28 |
 | [riscv-isa-sim (spike)](https://github.com/riscv/riscv-isa-sim) | 20260324-204b88d |
 | [verilator](https://github.com/verilator/verilator) | v5.046 |
+| [cmake](https://cmake.org/) | (from Ubuntu package) |
+| [ninja (ninja-build)](https://ninja-build.org/) | (from Ubuntu package) |
 
 ## Using the Pre-built Image
 
