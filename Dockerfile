@@ -29,7 +29,7 @@ RUN git clone --depth 1 --branch ${RISCV_GNU_TOOLCHAIN_VERSION} \
  && make -j$(nproc)
 
 RUN COMMIT_SHA=$(echo ${RISCV_ISA_SIM_VERSION} | cut -d- -f2) \
- && git clone --filter=blob:none --no-checkout \
+ && git clone --filter=blob:none --no-checkout --branch master --single-branch --no-tags \
     https://github.com/riscv/riscv-isa-sim.git riscv-isa-sim \
  && cd riscv-isa-sim \
  && git checkout ${COMMIT_SHA} \
