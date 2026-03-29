@@ -24,7 +24,7 @@ docker run --rm -it ghcr.io/adachi6k/docker-rv-dev-env:latest bash
 | Workflow | Trigger | Description |
 |----------|---------|-------------|
 | **Monthly upstream version check** | 1st of each month (UTC) / manual | Fetches the latest upstream releases for all three tools, compares them against the versions in `Dockerfile`, and opens a PR with the diff when a newer version is found. Does nothing if everything is already up to date. |
-| **Build and push Docker image** | Push to `main` that changes `Dockerfile` / manual | Builds the Docker image and pushes it to GHCR with the `latest` tag and a short-SHA tag. |
+| **Build and push Docker image** | Push to `main` that changes `Dockerfile` / manual | Builds the Docker image and pushes it to GHCR with the `latest` tag, a date tag (`YYYYMMDD`), and a short-SHA tag. |
 
 Both workflows can be triggered manually from the **Actions** tab via `workflow_dispatch`.
 
