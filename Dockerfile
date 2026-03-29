@@ -29,11 +29,10 @@ RUN git clone --depth 1 --branch ${RISCV_GNU_TOOLCHAIN_VERSION} \
  && make -j$(nproc)
 
 RUN COMMIT_SHA=$(echo ${RISCV_ISA_SIM_VERSION} | cut -d- -f2) \
- && git init riscv-isa-sim \
+ && git clone --filter=blob:none --no-checkout --branch master --single-branch --no-tags \
+    https://github.com/riscv/riscv-isa-sim.git riscv-isa-sim \
  && cd riscv-isa-sim \
- && git remote add origin https://github.com/riscv/riscv-isa-sim.git \
- && git fetch --depth 1 origin ${COMMIT_SHA} \
- && git checkout FETCH_HEAD \
+ && git checkout ${COMMIT_SHA} \
  && ./configure --prefix=${RISCV} \
  && make -j$(nproc) \
  && make install
