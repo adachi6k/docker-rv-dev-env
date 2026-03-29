@@ -62,6 +62,8 @@ RUN apt-get update && apt-get install -y \
     device-tree-compiler \
     build-essential \
     perl \
+    cmake \
+    ninja-build \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
