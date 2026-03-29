@@ -58,6 +58,7 @@ RUN apt-get update && apt-get install -y \
     libgmp10 \
     python3 \
     zlib1g \
+    zlib1g-dev \
     libexpat1 \
     device-tree-compiler \
     build-essential \
@@ -68,8 +69,8 @@ RUN apt-get update && apt-get install -y \
  && rm -rf /var/lib/apt/lists/*
 
 ENV RISCV=/opt/riscv
-ENV VERILATOR_ROOT=/opt/verilator
+ENV VERILATOR_ROOT=/opt/verilator/share/verilator
 ENV PATH=/opt/riscv/bin:/opt/verilator/bin:${PATH}
 
 COPY --from=builder ${RISCV} ${RISCV}
-COPY --from=builder ${VERILATOR_ROOT} ${VERILATOR_ROOT}
+COPY --from=builder /opt/verilator /opt/verilator
