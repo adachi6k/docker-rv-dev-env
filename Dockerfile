@@ -17,6 +17,7 @@ RUN apt-get update && apt-get install -y \
     git \
     device-tree-compiler \
     perl groff \
+    help2man \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
