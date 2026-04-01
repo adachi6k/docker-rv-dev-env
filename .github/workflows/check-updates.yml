@@ -126,13 +126,13 @@ jobs:
             printf "This PR was automatically created by the monthly upstream version check workflow.\n\n"
             printf "### Changes\n\n"
             if [ "${{ steps.compare.outputs.toolchain_changed }}" = "true" ]; then
-              printf "- **riscv-gnu-toolchain**: \`${{ steps.current.outputs.toolchain }}\` → \`${{ steps.latest.outputs.toolchain }}\`\n"
+              printf -- "- **riscv-gnu-toolchain**: \`${{ steps.current.outputs.toolchain }}\` → \`${{ steps.latest.outputs.toolchain }}\`\n"
             fi
             if [ "${{ steps.compare.outputs.spike_changed }}" = "true" ]; then
-              printf "- **riscv-isa-sim (spike)**: \`${{ steps.current.outputs.spike }}\` → \`${{ steps.latest.outputs.spike }}\`\n"
+              printf -- "- **riscv-isa-sim (spike)**: \`${{ steps.current.outputs.spike }}\` → \`${{ steps.latest.outputs.spike }}\`\n"
             fi
             if [ "${{ steps.compare.outputs.verilator_changed }}" = "true" ]; then
-              printf "- **verilator**: \`${{ steps.current.outputs.verilator }}\` → \`${{ steps.latest.outputs.verilator }}\`\n"
+              printf -- "- **verilator**: \`${{ steps.current.outputs.verilator }}\` → \`${{ steps.latest.outputs.verilator }}\`\n"
             fi
           } > /tmp/pr_body.md
 
