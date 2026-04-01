@@ -7,7 +7,7 @@ Docker image providing a RISC-V hardware development environment.
 | Tool | Version |
 |------|---------|
 | [riscv-gnu-toolchain](https://github.com/riscv/riscv-gnu-toolchain) | 2026.03.28 |
-| [riscv-isa-sim (spike)](https://github.com/riscv/riscv-isa-sim) | 20260324-204b88d |
+| [riscv-isa-sim (spike)](https://github.com/riscv/riscv-isa-sim) | 20260331-170f398 |
 | [verilator](https://github.com/verilator/verilator) | v5.046 |
 | [cmake](https://cmake.org/) | (from Ubuntu package) |
 | [ninja (ninja-build)](https://ninja-build.org/) | (from Ubuntu package) |
@@ -39,7 +39,7 @@ To update a tool version, change the corresponding `ARG` default value and rebui
 |-----|---------|-------------|
 | `UBUNTU_VERSION` | `24.04` | Ubuntu base image version |
 | `RISCV_GNU_TOOLCHAIN_VERSION` | `2026.03.28` | riscv-gnu-toolchain git tag |
-| `RISCV_ISA_SIM_VERSION` | `20260324-204b88d` | riscv-isa-sim commit (YYYYMMDD-sha) |
+| `RISCV_ISA_SIM_VERSION` | `20260331-170f398` | riscv-isa-sim commit (YYYYMMDD-sha) |
 | `VERILATOR_VERSION` | `v5.046` | Verilator git tag |
 
 To override a version at build time:
