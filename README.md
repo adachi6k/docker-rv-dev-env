@@ -58,8 +58,8 @@ Both workflows can be triggered manually from the **Actions** tab via `workflow_
 
 ## Maintenance
 
-Tool versions are managed via build arguments (`ARG`) at the top of the `Dockerfile`.
-To update a tool version, change the corresponding `ARG` default value and rebuild the image.
+Build settings are managed via build arguments (`ARG`) at the top of the `Dockerfile`.
+To change a default, update the corresponding `ARG` value and rebuild the image.
 
 | ARG | Default | Description |
 |-----|---------|-------------|
@@ -77,7 +77,7 @@ Default `RISCV_MULTILIB_GENERATOR` value:
 rv32i-ilp32--;rv32im-ilp32--;rv32imc-ilp32--;rv32im_zba_zbb_zbs-ilp32--;rv32imc_zba_zbb_zbs-ilp32--
 ```
 
-To override a version at build time:
+To override a build argument at build time:
 
 ```sh
 docker build \
