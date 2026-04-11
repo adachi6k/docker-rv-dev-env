@@ -12,6 +12,32 @@ Docker image providing a RISC-V hardware development environment.
 | [cmake](https://cmake.org/) | (from Ubuntu package) |
 | [ninja (ninja-build)](https://ninja-build.org/) | (from Ubuntu package) |
 
+## Bare-Metal Multilib Configuration
+
+The toolchain is built for **RV32 bare-metal (newlib)** targets by default with the following configuration:
+
+| Setting | Default |
+|---------|---------|
+| Default arch | `rv32im_zba_zbb_zbs` |
+| Default ABI | `ilp32` |
+
+### Supported multilib variants
+
+| march | mabi |
+|-------|------|
+| `rv32i` | `ilp32` |
+| `rv32im` | `ilp32` |
+| `rv32imc` | `ilp32` |
+| `rv32im_zba_zbb_zbs` | `ilp32` |
+| `rv32imc_zba_zbb_zbs` | `ilp32` |
+
+You can verify the multilib configuration inside the container.
+Note that `riscv64-unknown-elf-gcc` is the standard toolchain name for both RV32 and RV64 bare-metal targets; multilib handles the architecture selection.
+
+```sh
+riscv64-unknown-elf-gcc --print-multi-lib
+```
+
 ## Using the Pre-built Image
 
 Images are published to GitHub Container Registry (GHCR) and updated automatically when tool versions change.
@@ -41,6 +67,15 @@ To update a tool version, change the corresponding `ARG` default value and rebui
 | `RISCV_GNU_TOOLCHAIN_VERSION` | `2026.03.28` | riscv-gnu-toolchain git tag |
 | `RISCV_ISA_SIM_VERSION` | `20260331-170f398` | riscv-isa-sim commit (YYYYMMDD-sha) |
 | `VERILATOR_VERSION` | `v5.046` | Verilator git tag |
+| `RISCV_TOOLCHAIN_ARCH` | `rv32im_zba_zbb_zbs` | Default `-march` for the bare-metal toolchain |
+| `RISCV_TOOLCHAIN_ABI` | `ilp32` | Default `-mabi` for the bare-metal toolchain |
+| `RISCV_MULTILIB_GENERATOR` | *(see below)* | Multilib generator string passed to `--with-multilib-generator` |
+
+Default `RISCV_MULTILIB_GENERATOR` value:
+
+```
+rv32i-ilp32--;rv32im-ilp32--;rv32imc-ilp32--;rv32im_zba_zbb_zbs-ilp32--;rv32imc_zba_zbb_zbs-ilp32--
+```
 
 To override a version at build time:
 
