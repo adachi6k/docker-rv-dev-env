@@ -2,12 +2,18 @@ ARG UBUNTU_VERSION=24.04
 ARG RISCV_GNU_TOOLCHAIN_VERSION=2026.03.28
 ARG RISCV_ISA_SIM_VERSION=20260331-170f398
 ARG VERILATOR_VERSION=v5.046
+ARG RISCV_TOOLCHAIN_ARCH=rv32im_zba_zbb_zbs
+ARG RISCV_TOOLCHAIN_ABI=ilp32
+ARG RISCV_MULTILIB_GENERATOR="rv32i-ilp32--;rv32im-ilp32--;rv32imc-ilp32--;rv32im_zba_zbb_zbs-ilp32--;rv32imc_zba_zbb_zbs-ilp32--"
 
 # ---- Build Stage ----
 FROM ubuntu:${UBUNTU_VERSION} AS builder
 ARG RISCV_GNU_TOOLCHAIN_VERSION
 ARG RISCV_ISA_SIM_VERSION
 ARG VERILATOR_VERSION
+ARG RISCV_TOOLCHAIN_ARCH
+ARG RISCV_TOOLCHAIN_ABI
+ARG RISCV_MULTILIB_GENERATOR
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y \
@@ -28,6 +34,9 @@ RUN git clone --depth 1 --branch ${RISCV_GNU_TOOLCHAIN_VERSION} \
     https://github.com/riscv/riscv-gnu-toolchain.git \
  && cd riscv-gnu-toolchain \
  && ./configure --prefix=${RISCV} \
+    --with-arch=${RISCV_TOOLCHAIN_ARCH} \
+    --with-abi=${RISCV_TOOLCHAIN_ABI} \
+    --with-multilib-generator="${RISCV_MULTILIB_GENERATOR}" \
  && make -j$(nproc)
 
 RUN COMMIT_SHA=$(echo ${RISCV_ISA_SIM_VERSION} | cut -d- -f2) \
