@@ -11,7 +11,7 @@ Docker image providing a RISC-V hardware development environment.
 | [verilator](https://github.com/verilator/verilator) | v5.046 |
 | [cmake](https://cmake.org/) | (from Ubuntu package) |
 | [ninja (ninja-build)](https://ninja-build.org/) | (from Ubuntu package) |
-| [riscv-test-env](https://github.com/riscv/riscv-test-env) | master |
+| [riscv-test-env](https://github.com/riscv/riscv-test-env) | 20260109-a1c373e |
 
 ## riscv-test-env Files
 
@@ -93,7 +93,8 @@ To change a default, update the corresponding `ARG` value and rebuild the image.
 | `RISCV_TOOLCHAIN_ARCH` | `rv32im_zba_zbb_zbs` | Default `-march` for the bare-metal toolchain |
 | `RISCV_TOOLCHAIN_ABI` | `ilp32` | Default `-mabi` for the bare-metal toolchain |
 | `RISCV_MULTILIB_GENERATOR` | *(see below)* | Multilib generator string passed to `--with-multilib-generator` |
-| `RISCV_TEST_ENV_VERSION` | `master` | Branch or tag of `riscv/riscv-test-env` to bundle |
+| `RISCV_TEST_ENV_VERSION` | `20260109-a1c373e` | riscv-test-env commit (YYYYMMDD-sha) |
+| `RISCV_TESTS_VERSION` | `20260424-0bbecd1` | riscv-tests commit (YYYYMMDD-sha) used for `test_macros.h` |
 
 Default `RISCV_MULTILIB_GENERATOR` value:
 
