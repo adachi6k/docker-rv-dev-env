@@ -107,3 +107,8 @@ ENV PATH=/opt/riscv/bin:/opt/verilator/bin:${PATH}
 COPY --from=builder ${RISCV} ${RISCV}
 COPY --from=builder /opt/verilator /opt/verilator
 COPY --from=builder /opt/riscv-test-env /opt/riscv-test-env
+
+# CMake's find_package(verilator) re-injects VERILATOR_ROOT as the install
+# prefix (/opt/verilator), then looks for headers at ${VERILATOR_ROOT}/include.
+# Create a compatibility symlink so both paths resolve correctly.
+RUN ln -sf /opt/verilator/share/verilator/include /opt/verilator/include
