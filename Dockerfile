@@ -24,6 +24,10 @@ RUN apt-get update && apt-get install -y \
     autoconf automake autotools-dev curl python3 libmpc-dev \
     libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf \
     libtool patchutils bc zlib1g-dev libexpat-dev \
+    ccache \
+    mold \
+    libgoogle-perftools-dev libjemalloc-dev numactl perl-doc \
+    libfl2 libfl-dev zlibc \
     git \
     device-tree-compiler \
     perl groff \
@@ -89,8 +93,15 @@ RUN apt-get update && apt-get install -y \
     libmpfr6 \
     libgmp10 \
     python3 \
+    ccache \
+    mold \
+    z3 \
     zlib1g \
     zlib1g-dev \
+    libgoogle-perftools4 \
+    libjemalloc-dev \
+    numactl \
+    libfl2 \
     libexpat1 \
     device-tree-compiler \
     build-essential \
