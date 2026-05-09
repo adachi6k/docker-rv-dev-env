@@ -94,12 +94,10 @@ RUN apt-get update && apt-get install -y \
     python3 \
     zlib1g \
     zlib1g-dev \
-    libgoogle-perftools-dev \
-    libjemalloc-dev \
+    libgoogle-perftools4 \
+    libjemalloc2 \
     numactl \
     libfl2 \
-    libfl-dev \
-    zlibc \
     libexpat1 \
     device-tree-compiler \
     build-essential \
