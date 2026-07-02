@@ -27,7 +27,7 @@ RUN apt-get update && apt-get install -y \
     ccache \
     mold \
     libgoogle-perftools-dev libjemalloc-dev numactl perl-doc \
-    libfl2 libfl-dev zlibc \
+    libfl2 libfl-dev \
     git \
     device-tree-compiler \
     perl groff \
