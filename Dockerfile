@@ -41,6 +41,7 @@ WORKDIR /tmp/build
 RUN git clone --depth 1 --branch ${RISCV_GNU_TOOLCHAIN_VERSION} \
     https://github.com/riscv/riscv-gnu-toolchain.git \
  && cd riscv-gnu-toolchain \
+ && git -c submodule.fetchJobs=1 submodule update --init --recursive \
  && ./configure --prefix=${RISCV} \
     --with-arch=${RISCV_TOOLCHAIN_ARCH} \
     --with-abi=${RISCV_TOOLCHAIN_ABI} \
