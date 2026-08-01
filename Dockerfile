@@ -41,11 +41,17 @@ WORKDIR /tmp/build
 RUN git clone --depth 1 --branch ${RISCV_GNU_TOOLCHAIN_VERSION} \
     https://github.com/riscv/riscv-gnu-toolchain.git \
  && cd riscv-gnu-toolchain \
+ && for i in 1 2 3; do \
+      git -c submodule.fetchJobs=1 submodule update --init \
+      && break; \
+      [ "$i" -lt 3 ] || exit 1; \
+      sleep 120; \
+    done \
  && ./configure --prefix=${RISCV} \
     --with-arch=${RISCV_TOOLCHAIN_ARCH} \
     --with-abi=${RISCV_TOOLCHAIN_ABI} \
     --with-multilib-generator="${RISCV_MULTILIB_GENERATOR}" \
- && for i in 1 2 3; do make -j$(nproc) && break; [ "$i" -lt 3 ] || exit 1; sleep 30; done
+ && make -j$(nproc)
 
 RUN COMMIT_SHA=$(echo ${RISCV_ISA_SIM_VERSION} | cut -d- -f2) \
  && git clone --filter=blob:none --no-checkout --branch master --single-branch --no-tags \
