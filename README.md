@@ -6,8 +6,8 @@ Docker image providing a RISC-V hardware development environment.
 
 | Tool | Version |
 |------|---------|
-| [riscv-gnu-toolchain](https://github.com/riscv/riscv-gnu-toolchain) | 2026.07.15 |
-| [riscv-isa-sim (spike)](https://github.com/riscv/riscv-isa-sim) | 20260728-3d8eb08 |
+| [riscv-gnu-toolchain](https://github.com/riscv/riscv-gnu-toolchain) | 2026.08.27 |
+| [riscv-isa-sim (spike)](https://github.com/riscv/riscv-isa-sim) | 20260831-549da3f |
 | [verilator](https://github.com/verilator/verilator) | v5.050 |
 | [cmake](https://cmake.org/) | (from Ubuntu package) |
 | [ninja (ninja-build)](https://ninja-build.org/) | (from Ubuntu package) |
@@ -87,8 +87,8 @@ To change a default, update the corresponding `ARG` value and rebuild the image.
 | ARG | Default | Description |
 |-----|---------|-------------|
 | `UBUNTU_VERSION` | `24.04` | Ubuntu base image version |
-| `RISCV_GNU_TOOLCHAIN_VERSION` | `2026.07.15` | riscv-gnu-toolchain git tag |
-| `RISCV_ISA_SIM_VERSION` | `20260728-3d8eb08` | riscv-isa-sim commit (YYYYMMDD-sha) |
+| `RISCV_GNU_TOOLCHAIN_VERSION` | `2026.08.27` | riscv-gnu-toolchain git tag |
+| `RISCV_ISA_SIM_VERSION` | `20260831-549da3f` | riscv-isa-sim commit (YYYYMMDD-sha) |
 | `VERILATOR_VERSION` | `v5.050` | Verilator git tag |
 | `RISCV_TOOLCHAIN_ARCH` | `rv32im_zba_zbb_zbs` | Default `-march` for the bare-metal toolchain |
 | `RISCV_TOOLCHAIN_ABI` | `ilp32` | Default `-mabi` for the bare-metal toolchain |
