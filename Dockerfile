@@ -94,7 +94,7 @@ RUN RISCV_TEST_ENV_SHA=$(echo ${RISCV_TEST_ENV_VERSION} | cut -d- -f2) \
 FROM ubuntu:${UBUNTU_VERSION}
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     libmpc3 \
     libmpfr6 \
     libgmp10 \
@@ -114,6 +114,11 @@ RUN apt-get update && apt-get install -y \
     perl \
     cmake \
     ninja-build \
+    flex \
+    bison \
+    bc \
+    libssl-dev \
+    libelf-dev \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 

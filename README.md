@@ -65,6 +65,9 @@ riscv64-unknown-elf-gcc --print-multi-lib
 
 Images are published to GitHub Container Registry (GHCR) and updated automatically when tool versions change.
 
+The runtime image also includes Linux kernel/no-MMU build dependencies needed by scripts such as
+`scripts/build_linux_nommu.sh`: `flex`, `bison`, `bc`, `libssl-dev`, and `libelf-dev`.
+
 ```sh
 docker pull ghcr.io/adachi6k/docker-rv-dev-env:latest
 docker run --rm -it ghcr.io/adachi6k/docker-rv-dev-env:latest bash
