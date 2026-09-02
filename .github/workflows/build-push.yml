@@ -27,7 +27,7 @@ jobs:
 
       - name: Verify Linux no-MMU build dependencies
         run: |
-          docker run --rm docker-rv-dev-env:test bash -lc '
+          docker run --rm docker-rv-dev-env:test bash -e -lc '
             command -v flex
             command -v bison
             command -v bc
