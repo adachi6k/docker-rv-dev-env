@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - 'Dockerfile'
+      - '.github/workflows/build-push.yml'
   workflow_dispatch:
 
 permissions:
@@ -25,13 +26,43 @@ jobs:
           load: true
           tags: docker-rv-dev-env:test
 
-      - name: Verify Linux no-MMU build dependencies
+      - name: Verify runtime dependencies and Verilator smoke tests
         run: |
           docker run --rm docker-rv-dev-env:test bash -e -lc '
             command -v flex
             command -v bison
             command -v bc
             dpkg -s libssl-dev libelf-dev >/dev/null
+            test "$VERILATOR_ROOT" = /opt/verilator/share/verilator
+            verilator --version
+            test -f /usr/include/zlib.h
+
+            tmpdir=$(mktemp -d)
+            trap "rm -rf \"$tmpdir\"" EXIT
+            cd "$tmpdir"
+
+            cat > top.sv <<'"'"'SV'"'"'
+            module top;
+            endmodule
+            SV
+
+            cat > sim_main.cpp <<'"'"'CPP'"'"'
+            #include "Vtop.h"
+            #include "verilated.h"
+            #include "verilated_fst_c.h"
+
+            int main(int argc, char** argv) {
+              Verilated::commandArgs(argc, argv);
+              auto* top = new Vtop;
+              auto* trace = new VerilatedFstC;
+              top->trace(trace, 99);
+              delete trace;
+              delete top;
+              return 0;
+            }
+            CPP
+
+            verilator --cc --exe --build --trace-fst top.sv sim_main.cpp
           '
 
       - name: Log in to GitHub Container Registry
