@@ -41,26 +41,26 @@ jobs:
             trap "rm -rf \"$tmpdir\"" EXIT
             cd "$tmpdir"
 
-            cat > top.sv <<'"'"'SV'"'"'
-            module top;
-            endmodule
-            SV
+          cat > top.sv <<'"'"'SV'"'"'
+          module top;
+          endmodule
+          SV
 
-            cat > sim_main.cpp <<'"'"'CPP'"'"'
-            #include "Vtop.h"
-            #include "verilated.h"
-            #include "verilated_fst_c.h"
+          cat > sim_main.cpp <<'"'"'CPP'"'"'
+          #include "Vtop.h"
+          #include "verilated.h"
+          #include "verilated_fst_c.h"
 
-            int main(int argc, char** argv) {
-              Verilated::commandArgs(argc, argv);
-              auto* top = new Vtop;
-              auto* trace = new VerilatedFstC;
-              top->trace(trace, 99);
-              delete trace;
-              delete top;
-              return 0;
-            }
-            CPP
+          int main(int argc, char** argv) {
+            Verilated::commandArgs(argc, argv);
+            auto* top = new Vtop;
+            auto* trace = new VerilatedFstC;
+            top->trace(trace, 99);
+            delete trace;
+            delete top;
+            return 0;
+          }
+          CPP
 
             verilator --cc --exe --build --trace-fst top.sv sim_main.cpp
           '
