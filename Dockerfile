@@ -104,6 +104,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     z3 \
     zlib1g \
     zlib1g-dev \
+    liblz4-dev \
     libgoogle-perftools4 \
     libjemalloc-dev \
     numactl \
