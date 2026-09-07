@@ -11,6 +11,8 @@ Docker image providing a RISC-V hardware development environment.
 | [verilator](https://github.com/verilator/verilator) | v5.050 |
 | [cmake](https://cmake.org/) | (from Ubuntu package) |
 | [ninja (ninja-build)](https://ninja-build.org/) | (from Ubuntu package) |
+| Clang / clang++ (host compiler) | (from Ubuntu package) |
+| ccache / mold | (from Ubuntu package) |
 | [riscv-test-env](https://github.com/riscv/riscv-test-env) | 20260109-a1c373e |
 
 ## riscv-test-env Files
@@ -72,6 +74,25 @@ The runtime image also includes Linux kernel/no-MMU build dependencies needed by
 docker pull ghcr.io/adachi6k/docker-rv-dev-env:latest
 docker run --rm -it ghcr.io/adachi6k/docker-rv-dev-env:latest bash
 ```
+
+## Clang Host Builds
+
+To build LM with the same host compiler, cache and linker as its CI, run inside
+the container with the LM checkout mounted at `/work`:
+
+```sh
+export CCACHE_DIR=/work/build-cache/ccache
+export CCACHE_BASEDIR=/work
+export CCACHE_COMPILERCHECK=content
+cmake -S /work -B /work/build-clang -GNinja \
+  -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ \
+  -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DOBJCACHE_ENABLED=OFF \
+  -DCMAKE_EXE_LINKER_FLAGS=-fuse-ld=mold
+cmake --build /work/build-clang
+```
+
+Use a separate build directory when switching compilers. This selects the host
+compiler only; the bundled RISC-V cross GCC and the default `cc`/`c++` are unchanged.
 
 ## CI Workflows
 
