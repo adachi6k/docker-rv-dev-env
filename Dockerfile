@@ -112,6 +112,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libexpat1 \
     device-tree-compiler \
     build-essential \
+    clang \
     perl \
     cmake \
     ninja-build \

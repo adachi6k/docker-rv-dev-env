@@ -32,6 +32,10 @@ jobs:
             command -v flex
             command -v bison
             command -v bc
+            clang --version
+            clang++ --version
+            ccache --version
+            mold --version
             dpkg -s libssl-dev libelf-dev >/dev/null
             test "$VERILATOR_ROOT" = /opt/verilator/share/verilator
             verilator --version
@@ -62,7 +66,22 @@ jobs:
           }
           CPP
 
-            verilator --cc --exe --build --trace-fst top.sv sim_main.cpp
+          cat > CMakeLists.txt <<'"'"'CMAKE'"'"'
+          cmake_minimum_required(VERSION 3.8)
+          project(VerilatorSmoke CXX)
+          find_package(verilator REQUIRED HINTS $ENV{VERILATOR_ROOT})
+          add_executable(sim sim_main.cpp)
+          verilate(sim PREFIX Vtop TRACE_FST SOURCES top.sv)
+          CMAKE
+
+            # Verilators CMake verilate() consumes OBJCACHE_ENABLED. Disable its
+            # global launcher so CMAKE_CXX_COMPILER_LAUNCHER runs ccache only once.
+            cmake -S . -B build -GNinja \
+              -DCMAKE_CXX_COMPILER=clang++ \
+              -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DOBJCACHE_ENABLED=OFF \
+              -DCMAKE_EXE_LINKER_FLAGS=-fuse-ld=mold
+            cmake --build build --verbose
+            ./build/sim
           '
 
       - name: Log in to GitHub Container Registry
