@@ -74,6 +74,8 @@ jobs:
           verilate(sim PREFIX Vtop TRACE_FST SOURCES top.sv)
           CMAKE
 
+            # Verilators CMake verilate() consumes OBJCACHE_ENABLED. Disable its
+            # global launcher so CMAKE_CXX_COMPILER_LAUNCHER runs ccache only once.
             cmake -S . -B build -GNinja \
               -DCMAKE_CXX_COMPILER=clang++ \
               -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DOBJCACHE_ENABLED=OFF \
