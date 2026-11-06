@@ -8,7 +8,7 @@ Docker image providing a RISC-V hardware development environment.
 |------|---------|
 | [riscv-gnu-toolchain](https://github.com/riscv/riscv-gnu-toolchain) | 2026.10.29 |
 | [riscv-isa-sim (spike)](https://github.com/riscv/riscv-isa-sim) | 20261029-4c6a9bc |
-| [verilator](https://github.com/verilator/verilator) | v5.052 |
+| [verilator](https://github.com/verilator/verilator) | v5.054 |
 | [cmake](https://cmake.org/) | (from Ubuntu package) |
 | [ninja (ninja-build)](https://ninja-build.org/) | (from Ubuntu package) |
 | Clang / clang++ (host compiler) | (from Ubuntu package) |
@@ -113,7 +113,7 @@ To change a default, update the corresponding `ARG` value and rebuild the image.
 | `UBUNTU_VERSION` | `24.04` | Ubuntu base image version |
 | `RISCV_GNU_TOOLCHAIN_VERSION` | `2026.10.29` | riscv-gnu-toolchain git tag |
 | `RISCV_ISA_SIM_VERSION` | `20261029-4c6a9bc` | riscv-isa-sim commit (YYYYMMDD-sha) |
-| `VERILATOR_VERSION` | `v5.052` | Verilator git tag |
+| `VERILATOR_VERSION` | `v5.054` | Verilator git tag |
 | `RISCV_TOOLCHAIN_ARCH` | `rv32im_zba_zbb_zbs` | Default `-march` for the bare-metal toolchain |
 | `RISCV_TOOLCHAIN_ABI` | `ilp32` | Default `-mabi` for the bare-metal toolchain |
 | `RISCV_MULTILIB_GENERATOR` | *(see below)* | Multilib generator string passed to `--with-multilib-generator` |
