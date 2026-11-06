@@ -1,7 +1,7 @@
 ARG UBUNTU_VERSION=24.04
-ARG RISCV_GNU_TOOLCHAIN_VERSION=2026.08.27
-ARG RISCV_ISA_SIM_VERSION=20260928-0bff121
-ARG VERILATOR_VERSION=v5.052
+ARG RISCV_GNU_TOOLCHAIN_VERSION=2026.10.29
+ARG RISCV_ISA_SIM_VERSION=20261029-4c6a9bc
+ARG VERILATOR_VERSION=v5.054
 ARG RISCV_TOOLCHAIN_ARCH=rv32im_zba_zbb_zbs
 ARG RISCV_TOOLCHAIN_ABI=ilp32
 ARG RISCV_MULTILIB_GENERATOR="rv32i-ilp32--;rv32im-ilp32--;rv32imc-ilp32--;rv32im_zba_zbb_zbs-ilp32--;rv32imc_zba_zbb_zbs-ilp32--"
@@ -58,6 +58,7 @@ RUN COMMIT_SHA=$(echo ${RISCV_ISA_SIM_VERSION} | cut -d- -f2) \
     https://github.com/riscv/riscv-isa-sim.git riscv-isa-sim \
  && cd riscv-isa-sim \
  && git checkout ${COMMIT_SHA} \
+ && git submodule update --init --depth 1 berkeley-softfloat-3 \
  && ./configure --prefix=${RISCV} \
  && make -j$(nproc) \
  && make install
