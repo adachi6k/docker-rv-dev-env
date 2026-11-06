@@ -58,6 +58,7 @@ RUN COMMIT_SHA=$(echo ${RISCV_ISA_SIM_VERSION} | cut -d- -f2) \
     https://github.com/riscv/riscv-isa-sim.git riscv-isa-sim \
  && cd riscv-isa-sim \
  && git checkout ${COMMIT_SHA} \
+ && git submodule update --init --depth 1 berkeley-softfloat-3 \
  && ./configure --prefix=${RISCV} \
  && make -j$(nproc) \
  && make install
